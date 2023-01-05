@@ -11,43 +11,48 @@ public class ProductController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public ProductController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public ProductController(IMediator mediator) => _mediator = mediator;
 
-    [HttpGet]
-    public async Task<IActionResult> List()
-    {
-        var result = await _mediator.Send(new GetProductsQueryRequest());
-        return Ok(result);
-    }
+    /// <summary>
+    /// Get All Product
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("[action]")]
+    public async Task<IActionResult> List() => Ok(await _mediator.Send(new GetProductsQueryRequest()));
+     
+    /// <summary>
+    /// Delete Product
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete("[action]/{Id}")]
+    public async Task<IActionResult> Delete(int id) => Ok(await _mediator.Send(new DeleteProductCommandRequest(id)));
 
-    [HttpGet("{id}")]
+    /// <summary>
+    /// Create Product
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPost("[action]")]
+    public async Task<IActionResult> Create(CreateProductCommandRequest request) => Created("", await _mediator.Send(request));
+    
+    /// <summary>
+    /// Update Product
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPut("[action]")]
+    public async Task<IActionResult> Update(UpdateProductCommandRequest request) => Ok(await _mediator.Send(request));
+
+    /// <summary>
+    /// Get By Id Product
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("[action]/{Id}")]
     public async Task<IActionResult> Get(int id)
     {
         var result = await _mediator.Send(new GetProductByIdQueryRequest(id));
         return result == null ? NotFound() : Ok(result);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var result = await _mediator.Send(new DeleteProductCommandRequest(id));
-        return NoContent();
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateProductCommandRequest request)
-    {
-        await _mediator.Send(request);
-        return Created("", request);
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> Update(UpdateProductCommandRequest request)
-    {
-        await _mediator.Send(request);
-        return NoContent();
     }
 }

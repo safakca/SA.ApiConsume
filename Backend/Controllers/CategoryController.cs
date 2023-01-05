@@ -9,45 +9,49 @@ namespace Backend.Controllers;
 [ApiController]
 public class CategoryController : ControllerBase
 {
-    private readonly IMediator _mediator;
+    private readonly IMediator _mediator; 
+    public CategoryController(IMediator mediator) =>_mediator = mediator; 
 
-    public CategoryController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    /// <summary>
+    /// Get All Category
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("[action]")]
+    public async Task<IActionResult> List() => Ok(await _mediator.Send(new GetCategoriesQueryRequest()));
+      
+    /// <summary>
+    /// Create Category
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPost("[action]")]
+    public async Task<IActionResult> Create(CreateCategoryCommandRequest request) => Created("", await _mediator.Send(request));
+     
+    /// <summary>
+    /// Update Category
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPut("[action]")]
+    public async Task<IActionResult> Update(UpdateCategoryCommandRequest request) => Ok(await _mediator.Send(request));
+     
+    /// <summary>
+    /// Delete Category
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete("[action]/{id}")]
+    public async Task<IActionResult> Delete(int id) => Ok(await _mediator.Send(new DeleteCategoryCommandRequest(id)));
 
-    [HttpGet]
-    public async Task<IActionResult> List()
-    {
-        var result = await _mediator.Send(new GetCategoriesQueryRequest());
-        return Ok(result);
-    }
-
+    /// <summary>
+    /// Get By Id Category
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
         var result = await _mediator.Send(new GetCategoryByIdRequest(id));
         return result == null ? NotFound() : Ok(result);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateCategoryCommandRequest request)
-    {
-        await _mediator.Send(request);
-        return Created("", request);
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> Update(UpdateCategoryCommandRequest request)
-    {
-        await _mediator.Send(request);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        await _mediator.Send(new DeleteCategoryCommandRequest(id));
-        return NoContent();
     }
 }
