@@ -1,10 +1,12 @@
 ﻿using Backend.Core.Application.Features.CQRS.Commands.Products;
 using Backend.Core.Application.Features.CQRS.Queries.Products;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
 
+[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
 public class ProductController : ControllerBase
@@ -19,7 +21,7 @@ public class ProductController : ControllerBase
     /// <returns></returns>
     [HttpGet("[action]")]
     public async Task<IActionResult> List() => Ok(await _mediator.Send(new GetProductsQueryRequest()));
-     
+
     /// <summary>
     /// Delete Product
     /// </summary>
@@ -35,7 +37,7 @@ public class ProductController : ControllerBase
     /// <returns></returns>
     [HttpPost("[action]")]
     public async Task<IActionResult> Create(CreateProductCommandRequest request) => Created("", await _mediator.Send(request));
-    
+
     /// <summary>
     /// Update Product
     /// </summary>
@@ -49,7 +51,7 @@ public class ProductController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpGet("[action]/{Id}")]
+    [HttpGet("[action]/{Id}")] //TODO: CREATE CUSTOM EXCEPTION CLASS AND DELETE TERNARY IN CONTROLLER
     public async Task<IActionResult> Get(int id)
     {
         var result = await _mediator.Send(new GetProductByIdQueryRequest(id));

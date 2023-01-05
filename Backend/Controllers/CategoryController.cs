@@ -1,16 +1,18 @@
 ﻿using Backend.Core.Application.Features.CQRS.Commands.Categories;
 using Backend.Core.Application.Features.CQRS.Queries.Categories;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
 
+[Authorize(Roles = "Admin,Member")]
 [Route("api/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
 {
-    private readonly IMediator _mediator; 
-    public CategoryController(IMediator mediator) =>_mediator = mediator; 
+    private readonly IMediator _mediator;
+    public CategoryController(IMediator mediator) => _mediator = mediator;
 
     /// <summary>
     /// Get All Category
@@ -18,7 +20,7 @@ public class CategoryController : ControllerBase
     /// <returns></returns>
     [HttpGet("[action]")]
     public async Task<IActionResult> List() => Ok(await _mediator.Send(new GetCategoriesQueryRequest()));
-      
+
     /// <summary>
     /// Create Category
     /// </summary>
@@ -26,7 +28,7 @@ public class CategoryController : ControllerBase
     /// <returns></returns>
     [HttpPost("[action]")]
     public async Task<IActionResult> Create(CreateCategoryCommandRequest request) => Created("", await _mediator.Send(request));
-     
+
     /// <summary>
     /// Update Category
     /// </summary>
@@ -34,7 +36,7 @@ public class CategoryController : ControllerBase
     /// <returns></returns>
     [HttpPut("[action]")]
     public async Task<IActionResult> Update(UpdateCategoryCommandRequest request) => Ok(await _mediator.Send(request));
-     
+
     /// <summary>
     /// Delete Category
     /// </summary>
@@ -48,7 +50,7 @@ public class CategoryController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]
+    [HttpGet("{id}")]  //TODO: CREATE CUSTOM EXCEPTION CLASS AND DELETE TERNARY IN CONTROLLER
     public async Task<IActionResult> Get(int id)
     {
         var result = await _mediator.Send(new GetCategoryByIdRequest(id));

@@ -8,16 +8,13 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 {
     private readonly IRepository<Category> _repository;
 
-    public DeleteCategoryCommandHandler(IRepository<Category> repository)
-    {
-        _repository = repository;
-    }
-
+    public DeleteCategoryCommandHandler(IRepository<Category> repository) => _repository = repository;
+     
     public async Task<Unit> Handle(DeleteCategoryCommandRequest request, CancellationToken cancellationToken)
     {
         var deleted = await _repository.GetByIdAsync(request.Id);
-        if (deleted != null)  
-            await _repository.RemoveAsync(deleted); 
+        if (deleted != null)
+            await _repository.RemoveAsync(deleted);
         return Unit.Value;
     }
 }

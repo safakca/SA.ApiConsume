@@ -8,11 +8,8 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandR
 {
     private readonly IRepository<Product> _repository;
 
-    public UpdateProductCommandHandler(IRepository<Product> repository)
-    {
-        _repository = repository;
-    }
-
+    public UpdateProductCommandHandler(IRepository<Product> repository) => _repository = repository;
+     
     public async Task<Unit> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
     {
         var updated = await _repository.GetByIdAsync(request.Id);

@@ -8,11 +8,8 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandR
 {
     private readonly IRepository<Product> _repository;
 
-    public CreateProductCommandHandler(IRepository<Product> repository)
-    {
-        _repository = repository;
-    }
-
+    public CreateProductCommandHandler(IRepository<Product> repository) => _repository = repository;
+     
     public async Task<Unit> Handle(CreateProductCommandRequest request, CancellationToken cancellationToken)
     {
         await _repository.CreateAsync(new Product
