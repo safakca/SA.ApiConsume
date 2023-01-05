@@ -1,7 +1,7 @@
-﻿using Backend.Core.Application.Dtos;
+﻿using AutoMapper;
+using Backend.Core.Application.Dtos;
 using Backend.Core.Application.Features.CQRS.Queries.Categories;
 using Backend.Core.Application.Interfaces;
-using AutoMapper;
 using MediatR;
 
 namespace Backend.Core.Application.Features.CQRS.Handlers.Categories;
