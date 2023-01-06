@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
 
-[Authorize(Roles = "Admin")]
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Admin")]
 public class ProductController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -18,7 +18,7 @@ public class ProductController : ControllerBase
     /// <summary>
     /// Get All Product
     /// </summary>
-    /// <returns></returns>
+    /// <returns></returns> 
     [HttpGet("[action]")]
     public async Task<IActionResult> List() => Ok(await _mediator.Send(new GetProductsQueryRequest()));
 
@@ -27,7 +27,7 @@ public class ProductController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpDelete("[action]/{Id}")]
+    [HttpDelete("[action]/{id}")]
     public async Task<IActionResult> Delete(int id) => Ok(await _mediator.Send(new DeleteProductCommandRequest(id)));
 
     /// <summary>
@@ -51,7 +51,7 @@ public class ProductController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpGet("[action]/{Id}")] //TODO: CREATE CUSTOM EXCEPTION CLASS AND DELETE TERNARY IN CONTROLLER
+    [HttpGet("[action]/{id}")] //TODO: CREATE CUSTOM EXCEPTION CLASS AND DELETE TERNARY IN CONTROLLER
     public async Task<IActionResult> Get(int id)
     {
         var result = await _mediator.Send(new GetProductByIdQueryRequest(id));

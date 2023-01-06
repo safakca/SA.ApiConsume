@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers;
 
-[Authorize(Roles = "Admin,Member")]
+
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Admin,Member")]
 public class CategoryController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -50,7 +51,7 @@ public class CategoryController : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]  //TODO: CREATE CUSTOM EXCEPTION CLASS AND DELETE TERNARY IN CONTROLLER
+    [HttpGet("[action]/{id}")]  //TODO: CREATE CUSTOM EXCEPTION CLASS AND DELETE TERNARY IN CONTROLLER
     public async Task<IActionResult> Get(int id)
     {
         var result = await _mediator.Send(new GetCategoryByIdRequest(id));
