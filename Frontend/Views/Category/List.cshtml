@@ -18,12 +18,15 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var category in Model)
+                @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@category.Id</td>
-                        <td>@category.Defination</td>
-                        <td><a asp-action="Remove" asp-controller="Category" asp-route-id="@category.Id" class="btn btn-danger btn-sm">Sil</a></td>
+                        <td>@item.Id</td>
+                        <td>@item.Defination</td>
+                        <td>
+                            <a asp-action="Update" asp-controller="Category" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Update</a>
+                            <a asp-action="Remove" asp-controller="Category" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -31,7 +34,7 @@
     }
     else
     {
-        <div class="text-center"> Herhangi bir kayıt bulunamadı </div>
+        <div class="text-center"> Not found record</div>
     }
 }
 
