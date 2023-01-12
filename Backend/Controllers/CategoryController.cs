@@ -9,7 +9,7 @@ namespace Backend.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize(Roles = "Admin,Member")]
+[Authorize(Roles = "Admin")]
 public class CategoryController : ControllerBase
 {
     private readonly IMediator _mediator;

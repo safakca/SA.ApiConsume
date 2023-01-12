@@ -23,7 +23,7 @@ public class JwtGenerator
 
         SigningCredentials credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var expireDate = DateTime.UtcNow.AddMinutes(JwtDefaults.Expire);
+        var expireDate = DateTime.UtcNow.AddDays(JwtDefaults.Expire);
 
         JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(issuer: JwtDefaults.ValidIssuer,
                                                                  audience: JwtDefaults.ValidAudience,
@@ -33,7 +33,7 @@ public class JwtGenerator
                                                                  signingCredentials: credentials);
 
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-     
-        return new TokenResponseDto(handler.WriteToken(jwtSecurityToken),expireDate);
+
+        return new TokenResponseDto(handler.WriteToken(jwtSecurityToken), expireDate);
     }
 }
