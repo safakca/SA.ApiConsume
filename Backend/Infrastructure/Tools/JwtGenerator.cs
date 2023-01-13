@@ -25,11 +25,11 @@ public class JwtGenerator
 
         var expireDate = DateTime.UtcNow.AddDays(JwtDefaults.Expire);
 
-        JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(issuer: JwtDefaults.ValidIssuer,
-                                                                 audience: JwtDefaults.ValidAudience,
-                                                                 claims: claims,
-                                                                 notBefore: DateTime.UtcNow,
-                                                                 expires: expireDate,
+        JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(issuer: JwtDefaults.ValidIssuer, 
+                                                                 audience: JwtDefaults.ValidAudience, 
+                                                                 claims: claims, 
+                                                                 notBefore: DateTime.UtcNow, 
+                                                                 expires: expireDate, 
                                                                  signingCredentials: credentials);
 
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();

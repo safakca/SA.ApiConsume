@@ -1,10 +1,10 @@
-@using System.Text.Json;
-@model CreateProductModel
+﻿@using System.Text.Json;
+@model UpdateProductModel
 @{
     Layout = "_Layout";
 }
 
-<form class="w-75 m-5 p-3  mx-auto" asp-action="Create" asp-controller="Product" method="post">
+<form class="w-75 m-5 p-3  mx-auto" asp-action="Update" asp-controller="Product" method="post">
 
     @{
         TempData["Categories"] = JsonSerializer.Serialize(Model.Categories);

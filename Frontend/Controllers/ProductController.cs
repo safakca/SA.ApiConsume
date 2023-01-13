@@ -1,10 +1,14 @@
-using Frontend.Models;
+﻿using Frontend.Models;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text;
+using System.Reflection;
+
 namespace Frontend.Controllers;
 
-[Authorize(Roles ="Admin, Member")]
+[Authorize(Roles = "Admin, Member")]
 
 public class ProductController : Controller
 {
@@ -50,16 +54,18 @@ public class ProductController : Controller
         return RedirectToAction("List");
     }
 
+
+    [HttpGet]
     public async Task<IActionResult> Create()
     {
         var model = new CreateProductModel();
-        var token = User.Claims.FirstOrDefault(x => x.Type == "accesToken")?.Value;
+        var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
         if (token != null)
         {
             var client = _httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync($"http://localhost:5287/api/category/list");
+            var response = await client.GetAsync("http://localhost:5106/api/category/list");
 
             if (response.IsSuccessStatusCode)
             {
@@ -76,6 +82,113 @@ public class ProductController : Controller
             }
         }
         return RedirectToAction("List");
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Create(CreateProductModel model)
+    {
+        var data = TempData["Categories"]?.ToString();
+        if (data != null)
+        {
+            var categories = JsonSerializer.Deserialize<List<SelectListItem>>(data);
+            model.Categories = new SelectList(categories, "Value", "Text");
+        }
+        if (ModelState.IsValid)
+        {
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var client = _httpClientFactory.CreateClient();
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var jsonData = JsonSerializer.Serialize(model);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync("http://localhost:5106/api/product/create", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("List");
+                }
+                    ModelState.AddModelError("", "Happened Error"); 
+            } 
+        }
+        return View(model);
+    }
+
+    public async Task<IActionResult> Update(int id)
+    {
+        var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+        if (token != null)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var responseProduct = await client.GetAsync($"http://localhost:5106/api/product/get/{id}");
+
+            if (responseProduct.IsSuccessStatusCode)
+            {
+                var jsonData = await responseProduct.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<UpdateProductModel>(jsonData, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                }); 
+
+                var responseCategory = await client.GetAsync("http://localhost:5106/api/category/list");
+
+                if (responseCategory.IsSuccessStatusCode)
+                {
+                    var jsonCategoryData = await responseCategory.Content.ReadAsStringAsync();
+
+                    var data = JsonSerializer.Deserialize<List<CategoryListModel>>(jsonCategoryData, new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    });
+
+                    if (result != null)
+                        result.Categories = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(data, "Id", "Defination");
+                }  
+                return View(result);
+            }
+        } 
+        return RedirectToAction("List");
+    }
+
+
+    [HttpPost]
+    public async Task<IActionResult> Update(UpdateProductModel model)
+    {
+        var data = TempData["Categories"]?.ToString();
+        if (data != null)
+        {
+            var categories = JsonSerializer.Deserialize<List<SelectListItem>>(data);
+            model.Categories = new SelectList(categories, "Value", "Text", model.CategoryId);
+        }
+
+
+        if (ModelState.IsValid)
+        {
+
+            var token = User.Claims.FirstOrDefault(x => x.Type == "accessToken")?.Value;
+            if (token != null)
+            {
+                var client = _httpClientFactory.CreateClient();
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var jsonData = JsonSerializer.Serialize(model);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                var response = await client.PutAsync("http://localhost:5106/api/product/update", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("List");
+                }
+                ModelState.AddModelError("", "Error Happened");
+            }
+
+        }
+        return View(model);
     }
 
 

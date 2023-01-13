@@ -45,7 +45,8 @@ builder.Services.AddSwaggerGen(c => {
     c.AddSecurityRequirement(new OpenApiSecurityRequirement { { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, new string[] { } } }); });
 builder.Services.AddDbContext<BaseContext>(opt =>
 {
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("Local"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
+  //  opt.UseNpgsql(builder.Configuration.GetConnectionString("Local"));
 });
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
